@@ -1,4 +1,8 @@
 {
+  pam.sessionVariables = {
+    EDITOR="vim";
+  };
+
   programs.zsh = {
     enable = true;
 
