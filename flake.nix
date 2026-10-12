@@ -5,22 +5,23 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05";
 
     home-manager = {
-      url = "github:nix-community/home-manager/release-26.05";
+      url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
-  outputs = { nixpkgs, home-manager, ... }:
+  outputs = { nixpkgs, home-manager, ... }@inputs:
     let
       system = "x86_64-linux";
+      pkgs = nixpkgs.legacyPackages.${system};
       lib = nixpkgs.lib;
 
       mkHost = hostname: lib.nixosSystem {
         inherit system;
 
         modules = [
-          ./hosts/${hostname}/default.nix
-          home-manager.nixosModules.home-manager
+          ./hosts/${hostname}
+          inputs.home-manager.nixosModules.default
 
           {
             nixpkgs.config.allowUnfree = true;
@@ -37,6 +38,7 @@
     in
     {
       nixosConfigurations = {
+	extraSpecialArgs = { inherit inputs; };
         hummingbird = mkHost "hummingbird";
 	mastodon = mkHost "mastodon";
       };
