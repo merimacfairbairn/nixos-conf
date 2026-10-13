@@ -1,6 +1,6 @@
 {
   pam.sessionVariables = {
-    EDITOR="vim";
+    EDITOR="nvim";
   };
 
   programs.zsh = {
