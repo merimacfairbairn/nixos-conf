@@ -1,52 +1,53 @@
 {
-  description = "Aboba's nixos flake";
+    description = "Aboba's nixos flake";
 
-  inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05";
+    inputs = {
+        nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05";
 
-    home-manager = {
-      url = "github:nix-community/home-manager/release-26.05";
-      inputs.nixpkgs.follows = "nixpkgs";
+        home-manager = {
+            url = "github:nix-community/home-manager/release-26.05";
+            inputs.nixpkgs.follows = "nixpkgs";
+        };
+
+        nvim-config = {
+            url = "github:merimacfairbairn/nvim";
+            flake = false;
+        };
     };
 
-    nvim-config = {
-        url = "github:merimacfairbairn/nvim";
-        flake = false;
-    };
-  };
+    outputs = { nixpkgs, home-manager, ... }@inputs:
+        let
+        system = "x86_64-linux";
+    pkgs = nixpkgs.legacyPackages.${system};
+    lib = nixpkgs.lib;
 
-  outputs = { nixpkgs, home-manager, ... }@inputs:
-    let
-      system = "x86_64-linux";
-      pkgs = nixpkgs.legacyPackages.${system};
-      lib = nixpkgs.lib;
-
-      mkHost = hostname: lib.nixosSystem {
+    mkHost = hostname: lib.nixosSystem {
         inherit system;
 
         modules = [
-          ./hosts/${hostname}
-          inputs.home-manager.nixosModules.default
+            ./hosts/${hostname}
+        inputs.home-manager.nixosModules.default
 
-          {
+        {
             nixpkgs.config.allowUnfree = true;
 
             home-manager = {
-              useGlobalPkgs = true;
-              useUserPackages = true;
+                useGlobalPkgs = true;
+                useUserPackages = true;
 
-              users.aboba = import ./hosts/${hostname}/home.nix;
+                extraSpecialArgs = { inherit inputs; };
+
+                users.aboba = import ./hosts/${hostname}/home.nix;
             };
-          }
+        }
         ];
-      };
+    };
     in
     {
-      nixosConfigurations = {
-	extraSpecialArgs = { inherit inputs; };
-        hummingbird = mkHost "hummingbird";
-	mastodon = mkHost "mastodon";
-      };
+        nixosConfigurations = {
+            hummingbird = mkHost "hummingbird";
+            mastodon = mkHost "mastodon";
+        };
     };
 }
 
