@@ -1,11 +1,14 @@
 {
   programs.git = {
     enable = true;
-    
-    userName = "Merimac";
-    userEmail = "merimacfairbairn.git@gmail.com";
-    extraConfig = {
-      init.defaultBranch = "main";
+
+    settings = {
+        user = {
+            name = "Merimac";
+            email = "merimacfairbairn.git@gmail.com";
+        };
+
+        init.defaultBranch = "main";
     };
   };
 }
