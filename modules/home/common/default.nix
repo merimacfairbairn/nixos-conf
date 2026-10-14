@@ -1,6 +1,6 @@
 {
   imports = [
-    ./zsh.nix
+    ./shell.nix
     ./neovim.nix
     ./git.nix
   ];
