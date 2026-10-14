@@ -1,4 +1,4 @@
-{ lib, config, pkgs, ... }:
+{ lib, config, pkgs, home-manager, ... }:
 
 let
   inherit (lib) mkEnableOption mkOption mkIf types;
@@ -41,5 +41,6 @@ in
     };
 
     programs.${cfg.loginShell}.enable = true;
+    home-manager.users.${cfg.userName}.programs.${cfg.loginShell}.enable = true;
   };
 }
